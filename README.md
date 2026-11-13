@@ -6,11 +6,11 @@
 
 **[Setup и Portable — все выпуски](https://github.com/Kernefix/DiscordLink-Releases/releases)**
 
-Текущий выпуск: **0.9.9.20 RC1**.
+Текущий выпуск: **0.9.9.21 RC2**.
 
-- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.20/DiscordLink_0.9.9.20_Setup.exe) — установка программы и ярлыков.
-- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.20/DiscordLink_0.9.9.20.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
-- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.20/update-manifest.json).
+- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.21/DiscordLink_0.9.9.21_Setup.exe) — установка программы и ярлыков.
+- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.21/DiscordLink_0.9.9.21.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
+- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.21/update-manifest.json).
 
 Для скачивания не нужен доступ к приватному проекту или токен GitHub. .NET входит в комплект. При запуске EXE Windows запрашивает права администратора. Setup рассчитан на административную учётную запись, включая обычный UAC этой же учётной записи.
 
