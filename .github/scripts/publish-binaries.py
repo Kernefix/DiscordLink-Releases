@@ -203,6 +203,22 @@ def verify_package(directory, tag, assets):
         require({"discordlink.exe", "engine/manifest.json"} <= names, "ZIP lacks application or engine metadata")
 
 
+def create_draft(value, head, directory):
+    # Use the creation response's numeric ID. A just-created draft may not be
+    # immediately visible through the cached release list or published-tag API.
+    request_file = directory / "draft-request.json"
+    request_file.write_text(json.dumps({
+        "tag_name": value["tag"], "target_commitish": head,
+        "name": value["title"], "body": value["notes"],
+        "draft": True, "prerelease": value["prerelease"],
+    }), encoding="utf-8")
+    created = json.loads(gh("api", "--method", "POST", f"repos/{REPOSITORY}/releases",
+                            "--input", str(request_file)))
+    require(type(created.get("id")) is int and created.get("draft") is True and
+            created.get("tag_name") == value["tag"], "GitHub did not return the exact created draft")
+    return created
+
+
 def publish(value, assets):
     require(os.environ.get("GITHUB_REPOSITORY") == REPOSITORY, "Publication is restricted to the public download repo")
     repository = api(f"repos/{REPOSITORY}")
@@ -234,12 +250,7 @@ def publish(value, assets):
         notes = directory / "release-notes.md"
         notes.write_text(value["notes"], encoding="utf-8")
         if release is None:
-            arguments = ["release", "create", tag, "--repo", REPOSITORY, "--draft", "--verify-tag",
-                         "--title", value["title"], "--notes-file", str(notes)]
-            if value["prerelease"]:
-                arguments.append("--prerelease")
-            gh(*arguments)
-            release = release_for_tag(tag)
+            release = create_draft(value, head, directory)
         require(release is not None and type(release.get("id")) is int, "Public draft was not created")
         release_id = release["id"]
         release = api(f"repos/{REPOSITORY}/releases/{release_id}")
