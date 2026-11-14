@@ -6,20 +6,21 @@
 
 **[Setup и Portable — все выпуски](https://github.com/Kernefix/DiscordLink-Releases/releases)**
 
-Текущий выпуск: **0.9.9.22 RC3**.
+Текущий выпуск: **0.9.9.23 RC4**.
 
-- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.22/DiscordLink_0.9.9.22_Setup.exe) — установка программы и ярлыков.
-- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.22/DiscordLink_0.9.9.22.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
-- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.22/update-manifest.json).
+- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.23/DiscordLink_0.9.9.23_Setup.exe) — установка программы и ярлыков.
+- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.23/DiscordLink_0.9.9.23.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
+- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.23/update-manifest.json).
 
 Для скачивания не нужен доступ к приватному проекту или токен GitHub. .NET входит в комплект. При запуске EXE Windows запрашивает права администратора. Setup рассчитан на административную учётную запись, включая обычный UAC этой же учётной записи.
 
-## Что нового в 0.9.9.22
+## Что нового в 0.9.9.23
 
-- «О программе»: KERNEFIX LABS, [Telegram @kernefix_labs](https://t.me/kernefix_labs), версия и лицензии.
-- Сравнение системного DNS с Cloudflare и Google по HTTPS, без изменения настроек Windows.
-- Описание публичного выпуска и отдельные кнопки загрузки Setup и Portable.
-- Копирование краткой диагностической сводки без IP, личных путей и журнала.
+- Узнаваемые иконки Telegram, GitHub, лицензий и сообщения об ошибке.
+- Читаемые карточки ссылок и более компактный раздел «О программе».
+- Исправлено отображение точного Telegram-адреса @kernefix_labs.
+- Кнопка «Сообщить об ошибке» открывает публичные GitHub Issues; автоматической отправки нет.
+- Значки загрузок Setup/Portable и копирования диагностической сводки.
 
 ## Что делает программа
 
