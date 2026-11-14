@@ -6,13 +6,20 @@
 
 **[Setup и Portable — все выпуски](https://github.com/Kernefix/DiscordLink-Releases/releases)**
 
-Текущий выпуск: **0.9.9.21 RC2**.
+Текущий выпуск: **0.9.9.22 RC3**.
 
-- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.21/DiscordLink_0.9.9.21_Setup.exe) — установка программы и ярлыков.
-- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.21/DiscordLink_0.9.9.21.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
-- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.21/update-manifest.json).
+- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.22/DiscordLink_0.9.9.22_Setup.exe) — установка программы и ярлыков.
+- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.22/DiscordLink_0.9.9.22.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
+- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.22/update-manifest.json).
 
 Для скачивания не нужен доступ к приватному проекту или токен GitHub. .NET входит в комплект. При запуске EXE Windows запрашивает права администратора. Setup рассчитан на административную учётную запись, включая обычный UAC этой же учётной записи.
+
+## Что нового в 0.9.9.22
+
+- «О программе»: KERNEFIX LABS, [Telegram @kernefix_labs](https://t.me/kernefix_labs), версия и лицензии.
+- Сравнение системного DNS с Cloudflare и Google по HTTPS, без изменения настроек Windows.
+- Описание публичного выпуска и отдельные кнопки загрузки Setup и Portable.
+- Копирование краткой диагностической сводки без IP, личных путей и журнала.
 
 ## Что делает программа
 
@@ -32,4 +39,4 @@ DiscordLink управляет комплектным движком winws/WinDi
 
 Лицензия DiscordLink: [MIT](LICENSE). Сторонние компоненты сохраняют собственные лицензии: [уведомления и ссылки на исходники](THIRD-PARTY-NOTICES.md).
 
-Автор: [Kernefix](https://github.com/Kernefix). Сообщить о проблеме можно в [Issues](https://github.com/Kernefix/DiscordLink-Releases/issues); не публикуйте токены, IP-адреса и личные данные.
+Разработчик: **KERNEFIX LABS** · [Telegram @kernefix_labs](https://t.me/kernefix_labs) · [GitHub](https://github.com/Kernefix). Сообщить о проблеме можно в [Issues](https://github.com/Kernefix/DiscordLink-Releases/issues); не публикуйте токены, IP-адреса и личные данные.
