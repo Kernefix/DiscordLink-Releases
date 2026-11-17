@@ -6,20 +6,20 @@
 
 **[Setup и Portable — все выпуски](https://github.com/Kernefix/DiscordLink-Releases/releases)**
 
-Текущий выпуск: **0.9.9.24 RC4**.
+Текущий выпуск: **0.9.9.25 RC4**.
 
-- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.24/DiscordLink_0.9.9.24_Setup.exe) — установка программы и ярлыков.
-- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.24/DiscordLink_0.9.9.24.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
-- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.24/update-manifest.json).
+- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.25/DiscordLink_0.9.9.25_Setup.exe) — установка программы и ярлыков.
+- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.25/DiscordLink_0.9.9.25.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
+- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.25/update-manifest.json).
 
 Для скачивания не нужен доступ к приватному проекту или токен GitHub. .NET входит в комплект. При запуске EXE Windows запрашивает права администратора. Setup рассчитан на административную учётную запись, включая обычный UAC этой же учётной записи.
 
-## Что нового в 0.9.9.24
+## Что нового в 0.9.9.25
 
-- Общий итог диагностики с объяснением и подходящим следующим действием.
-- Предпросмотр краткой сводки и полного отчёта; копирование и сохранение показанного текста.
-- Результаты последнего Smart в отчёте: режимы, причины выбора, время и условия.
-- Исправленный счётчик фактически начатых попыток восстановления.
+- Компактная диагностика: один итог, одна кнопка проверки и три коротких статуса.
+- Технические показатели, сравнение DNS и результаты Smart доступны в раскрываемых подробностях.
+- После отмены или ошибки новая попытка явно отделена от сохранённых предыдущих результатов.
+- Сохранены предпросмотр, копирование и сохранение отчёта; интерфейс проверяется на обычном, минимальном и широком окне.
 
 ## Что делает программа
 
