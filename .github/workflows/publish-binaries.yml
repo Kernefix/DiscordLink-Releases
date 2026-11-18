@@ -2,7 +2,7 @@ name: Publish validated binaries
 run-name: Publish ${{ github.event.client_payload.tag }} / ${{ github.event.client_payload.request_id }}
 on:
   repository_dispatch:
-    types: [validated-release]
+    types: [validated-release, validated-repack]
 permissions:
   contents: write
 concurrency:
@@ -20,3 +20,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 .github/scripts/publish-binaries.py
+
