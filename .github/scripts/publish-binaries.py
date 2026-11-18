@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import signal
 import stat
 import subprocess
 import tempfile
@@ -43,7 +44,7 @@ def gh(*arguments, optional=False):
             return None
         # gh diagnostics can include URLs. Keep event URLs and credentials out
         # of public logs, including on authentication or download failures.
-        raise Refused("GitHub operation failed; no release files were replaced")
+        raise Refused("GitHub operation failed")
     return result.stdout
 
 
@@ -281,12 +282,177 @@ def publish(value, assets):
         return final["html_url"]
 
 
+# A narrowly scoped exception requested by the owner for the already published
+# 0.9.9.26 tray rendering repair. Regular publication remains immutable.
+REPACK_TAG = "v0.9.9.26"
+REPACK_RELEASE_ID = 449641755
+REPACK_TAG_SHA = "c859ae94e48bc1ed21bd6404cd2627ecdf35d8fc"
+REPACK_OLD_ASSETS = {
+    "DiscordLink_0.9.9.26_Setup.exe": {
+        "size": 71720426,
+        "sha256": "e54a791c1b7b1523d69f225fdcdde83266bbf6048f42700a14f79dff02429f43",
+    },
+    "DiscordLink_0.9.9.26.zip": {
+        "size": 71536999,
+        "sha256": "8ad57c531394cd6e3135cd503d6c3ef7483d16481a165c577c812f930b2e4e9d",
+    },
+    "update-manifest.json": {
+        "size": 195,
+        "sha256": "9eee74a2c1ea06b85f80fcadd1358bc50024fb4dbb8f16f2f969f8d06ccfb3bd",
+    },
+}
+REPACK_ORDER = tuple(REPACK_OLD_ASSETS)  # Setup and ZIP first, manifest last.
+
+
+def validate_repack_payload(event):
+    require(event.get("action") == "validated-repack", "Unexpected repack dispatch type")
+    value, assets = validate_payload({**event, "action": "validated-release"})
+    require(value.get("replacement_authorized") is True and value["tag"] == REPACK_TAG and
+            value.get("expected_release_id") == REPACK_RELEASE_ID and
+            value.get("expected_tag_sha") == REPACK_TAG_SHA and
+            value.get("expected_old_assets") == REPACK_OLD_ASSETS,
+            "Repack is restricted to the explicitly approved original 0.9.9.26 files")
+    require(value["title"] == "DiscordLink 0.9.9.26" and value["prerelease"] is False,
+            "Repack cannot rename or reclassify the published release")
+    return value, assets
+
+
+def repack_identity():
+    reference = api(f"repos/{REPOSITORY}/git/ref/tags/{REPACK_TAG}")
+    require(reference.get("object", {}).get("type") == "commit" and
+            reference["object"].get("sha") == REPACK_TAG_SHA,
+            "The approved public tag changed")
+    release = api(f"repos/{REPOSITORY}/releases/{REPACK_RELEASE_ID}")
+    require(release.get("id") == REPACK_RELEASE_ID and release.get("tag_name") == REPACK_TAG and
+            release.get("name") == "DiscordLink 0.9.9.26" and release.get("draft") is False and
+            release.get("prerelease") is False and release.get("immutable") is False,
+            "The approved mutable public release changed")
+    return release
+
+
+def repack_inventory(release):
+    found = {}
+    for asset in release.get("assets", []):
+        name, digest = asset.get("name"), asset.get("digest")
+        require(name in REPACK_OLD_ASSETS and name not in found and
+                asset.get("state") == "uploaded" and type(asset.get("size")) is int and
+                isinstance(digest, str) and re.fullmatch(r"sha256:[a-f0-9]{64}", digest),
+                "Repack encountered an unexpected, duplicate or incomplete public asset")
+        found[name] = {"size": asset["size"], "sha256": digest[7:]}
+    return found
+
+
+def repack_expected(assets):
+    return {name: {"size": assets[name]["size"], "sha256": assets[name]["sha256"]}
+            for name in REPACK_ORDER}
+
+
+def repack_verify_state(expected, retries=1):
+    for attempt in range(retries):
+        release = repack_identity()
+        if repack_inventory(release) == expected:
+            return release
+        if attempt + 1 < retries:
+            time.sleep(1)
+    raise Refused("Public assets changed or the repack upload could not be verified")
+
+
+def repack_verify_file(path, expected):
+    require(path.is_file() and path.stat().st_size == expected["size"],
+            "A rollback file did not match the approved original size")
+    with path.open("rb") as content:
+        require(hashlib.file_digest(content, "sha256").hexdigest() == expected["sha256"],
+                "A rollback file did not match the approved original digest")
+
+
+def repack_restore(directory, incoming, attempted):
+    # Only restore files this transaction attempted and whose current state is
+    # missing or exactly our new bytes. Never overwrite a concurrent foreign
+    # replacement. Preserve manifest-last ordering in both directions.
+    for name in REPACK_ORDER:
+        current = repack_inventory(repack_identity())
+        state, original = current.get(name), REPACK_OLD_ASSETS[name]
+        if state == original:
+            continue
+        require(name in attempted and (state is None or state == incoming[name]),
+                "Rollback stopped because a public file was changed by another operation")
+        repack_verify_file(directory / name, original)
+        gh("release", "upload", REPACK_TAG, str(directory / name), "--repo", REPOSITORY, "--clobber")
+        after = repack_inventory(repack_identity())
+        require(after.get(name) == original, "Rollback upload could not be verified")
+    repack_verify_state(REPACK_OLD_ASSETS, retries=5)
+
+
+def publish_repack(value, assets):
+    require(os.environ.get("GITHUB_REPOSITORY") == REPOSITORY,
+            "Repack is restricted to the public download repository")
+    repository = api(f"repos/{REPOSITORY}")
+    require(repository.get("private") is False and repository.get("full_name") == REPOSITORY and
+            not repository.get("fork"), "The download repository must remain public and separate")
+    verify_public_commit(os.environ.get("GITHUB_SHA", ""))
+    verify_public_commit(REPACK_TAG_SHA)
+    incoming = repack_expected(assets)
+    current = repack_identity()
+    if repack_inventory(current) == incoming:
+        return current["html_url"]
+    repack_verify_state(REPACK_OLD_ASSETS)
+    with tempfile.TemporaryDirectory(prefix="DiscordLink-public-repack-") as temporary:
+        directory = Path(temporary)
+        fresh, rollback = directory / "incoming", directory / "rollback"
+        fresh.mkdir()
+        rollback.mkdir()
+        for name in REPACK_ORDER:
+            download(assets[name], fresh / name)
+        verify_package(fresh, REPACK_TAG, assets)
+        # Back up all original binaries before making the first replacement.
+        for name in REPACK_ORDER:
+            gh("release", "download", REPACK_TAG, "--repo", REPOSITORY,
+               "--pattern", name, "--dir", str(rollback))
+            repack_verify_file(rollback / name, REPACK_OLD_ASSETS[name])
+        verify_package(rollback, REPACK_TAG, REPACK_OLD_ASSETS)
+        repack_verify_state(REPACK_OLD_ASSETS)
+        expected, attempted = dict(REPACK_OLD_ASSETS), set()
+        def interrupted(signum, frame):
+            raise KeyboardInterrupt()
+        previous_handlers = {kind: signal.signal(kind, interrupted)
+                             for kind in (signal.SIGINT, signal.SIGTERM)}
+        try:
+            for name in REPACK_ORDER:
+                repack_verify_state(expected)
+                attempted.add(name)
+                gh("release", "upload", REPACK_TAG, str(fresh / name), "--repo", REPOSITORY, "--clobber")
+                expected[name] = incoming[name]
+                repack_verify_state(expected, retries=5)
+            final = repack_verify_state(incoming, retries=5)
+            require(api(f"repos/{REPOSITORY}").get("private") is False,
+                    "The download repository visibility changed")
+            return final["html_url"]
+        except BaseException:
+            # Complete bounded rollback even if another graceful stop arrives.
+            # A runner hard kill still requires its owner's retained backup.
+            for kind in previous_handlers:
+                signal.signal(kind, signal.SIG_IGN)
+            try:
+                repack_restore(rollback, incoming, attempted)
+            except BaseException:
+                raise Refused("Repack failed and automatic rollback could not be verified; inspect the existing release before retrying") from None
+            raise Refused("Repack failed; all approved original public files were restored and verified") from None
+        finally:
+            for kind, handler in previous_handlers.items():
+                signal.signal(kind, handler)
+
+
 def main():
     try:
         event_file = Path(os.environ["GITHUB_EVENT_PATH"])
         require(event_file.stat().st_size <= 256 * 1024, "Publication event is oversized")
-        value, assets = validate_payload(json.loads(event_file.read_text(encoding="utf-8")))
-        print(publish(value, assets))
+        event = json.loads(event_file.read_text(encoding="utf-8"))
+        if event.get("action") == "validated-repack":
+            value, assets = validate_repack_payload(event)
+            print(publish_repack(value, assets))
+        else:
+            value, assets = validate_payload(event)
+            print(publish(value, assets))
     except (Refused, OSError, ValueError, TypeError, KeyError, zipfile.BadZipFile, subprocess.TimeoutExpired) as error:
         # Do not print raw network/subprocess exceptions: they may contain a URL.
         message = str(error) if isinstance(error, Refused) else "Publication could not complete; details are withheld to protect temporary URLs"
@@ -295,3 +461,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
