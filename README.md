@@ -6,7 +6,7 @@
 
 **[Setup и Portable — все выпуски](https://github.com/Kernefix/DiscordLink-Releases/releases)**
 
-Текущий выпуск: **0.9.9.25 RC4**.
+Текущий выпуск: **0.9.9.25**.
 
 - [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.25/DiscordLink_0.9.9.25_Setup.exe) — установка программы и ярлыков.
 - [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.25/DiscordLink_0.9.9.25.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
@@ -25,7 +25,7 @@
 
 DiscordLink управляет комплектным движком winws/WinDivert, предлагает три режима и Smart-подбор, диагностику сервисов Discord и отдельный UDP/STUN-тест. Движок Flowseal 1.10.4 поставляется вместе с программой и восстанавливается без скачивания.
 
-Успешные сетевые проверки не подтверждают реальный голосовой звонок Discord. RC — предварительный выпуск; проверьте работу в своей сети. Программа не меняет DNS, системный hosts, прокси или правила файрвола.
+Успешные сетевые проверки не подтверждают реальный голосовой звонок Discord. Фактический звонок проверяйте отдельно в своей сети. Программа не меняет DNS, системный hosts, прокси или правила файрвола.
 
 ## Удаление
 
