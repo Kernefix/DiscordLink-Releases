@@ -6,20 +6,20 @@
 
 **[Setup и Portable — все выпуски](https://github.com/Kernefix/DiscordLink-Releases/releases)**
 
-Текущий выпуск: **0.9.9.25**.
+Текущий выпуск: **0.9.9.26**.
 
-- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.25/DiscordLink_0.9.9.25_Setup.exe) — установка программы и ярлыков.
-- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.25/DiscordLink_0.9.9.25.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
-- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.25/update-manifest.json).
+- [Скачать Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.26/DiscordLink_0.9.9.26_Setup.exe) — установка программы и ярлыков.
+- [Скачать Portable ZIP](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.26/DiscordLink_0.9.9.26.zip) — распакуйте всю папку и запустите `DiscordLink.exe`.
+- [Контрольная информация Setup](https://github.com/Kernefix/DiscordLink-Releases/releases/download/v0.9.9.26/update-manifest.json).
 
 Для скачивания не нужен доступ к приватному проекту или токен GitHub. .NET входит в комплект. При запуске EXE Windows запрашивает права администратора. Setup рассчитан на административную учётную запись, включая обычный UAC этой же учётной записи.
 
-## Что нового в 0.9.9.25
+## Что нового в 0.9.9.26
 
-- Компактная диагностика: один итог, одна кнопка проверки и три коротких статуса.
-- Технические показатели, сравнение DNS и результаты Smart доступны в раскрываемых подробностях.
-- После отмены или ошибки новая попытка явно отделена от сохранённых предыдущих результатов.
-- Сохранены предпросмотр, копирование и сохранение отчёта; интерфейс проверяется на обычном, минимальном и широком окне.
+- Меню трея оформлено в стиле программы: тёмная поверхность, скругления, иконки и подсветка.
+- Помощь по трём проблемам: Discord не открывается, зависает обновление, не работает голос. Каждый сценарий предлагает один следующий шаг по сохранённым результатам.
+- Ручные отметки «Помогло» и «Проблема осталась» привязаны к условиям и включаются в отчёт с явным указанием источника.
+- Версии в программе, Setup, Portable и названиях выпусков обозначаются только числами.
 
 ## Что делает программа
 
