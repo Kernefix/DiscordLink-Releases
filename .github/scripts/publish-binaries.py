@@ -307,10 +307,13 @@ REPACK_ORDER = tuple(REPACK_OLD_ASSETS)  # Setup and ZIP first, manifest last.
 def validate_repack_payload(event):
     require(event.get("action") == "validated-repack", "Unexpected repack dispatch type")
     value, assets = validate_payload({**event, "action": "validated-release"})
+    expected = value.get("expected_release")
+    require(len(value) <= 10, "Repack request exceeds GitHub's client-payload property limit")
     require(value.get("replacement_authorized") is True and value["tag"] == REPACK_TAG and
-            value.get("expected_release_id") == REPACK_RELEASE_ID and
-            value.get("expected_tag_sha") == REPACK_TAG_SHA and
-            value.get("expected_old_assets") == REPACK_OLD_ASSETS,
+            isinstance(expected, dict) and set(expected) == {"id", "tag_sha", "old_assets"} and
+            expected.get("id") == REPACK_RELEASE_ID and
+            expected.get("tag_sha") == REPACK_TAG_SHA and
+            expected.get("old_assets") == REPACK_OLD_ASSETS,
             "Repack is restricted to the explicitly approved original 0.9.9.26 files")
     require(value["title"] == "DiscordLink 0.9.9.26" and value["prerelease"] is False,
             "Repack cannot rename or reclassify the published release")
